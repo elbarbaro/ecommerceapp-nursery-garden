@@ -2,7 +2,7 @@
 
 This project is a ecommerce platform to sale garden items. Build to Java and Spring/Spring Boot framework for practice development software concepts (OO, HTTP, Databases, REST, MVC, SQL, JSON)
 
-## Table de Contenidos
+## Content
 
 - [Requirements](#requisitos)
 - [Setup](#configuración)
