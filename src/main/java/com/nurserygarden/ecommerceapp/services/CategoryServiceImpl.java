@@ -6,6 +6,11 @@ import com.nurserygarden.ecommerceapp.repositories.CategoryRepository;
 import com.nurserygarden.ecommerceapp.repositories.entities.Category;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
@@ -24,6 +29,26 @@ public class CategoryServiceImpl implements CategoryService {
         Category categoryCreated = categoryRepository.save(category);
 
         return toCategoryResponse(categoryCreated);
+    }
+
+    @Override
+    public List<CategoryResponse> findAll() {
+        Iterable<Category> categories = categoryRepository.findAll();
+        return buildCategoryResponseFromStream(categories);
+    }
+
+    private List<CategoryResponse> buildCategoryResponseList(Iterable<Category> categories) {
+        List<CategoryResponse> categoryResponses = new ArrayList<>();
+        for(Category category: categories) {
+            categoryResponses.add(toCategoryResponse(category));
+        }
+        return categoryResponses;
+    }
+
+    private List<CategoryResponse> buildCategoryResponseFromStream(Iterable<Category> categories) {
+        return StreamSupport
+                .stream(categories.spliterator(), false)
+                .map(this::toCategoryResponse).collect(Collectors.toList());
     }
 
     private CategoryResponse toCategoryResponse(Category category) {
