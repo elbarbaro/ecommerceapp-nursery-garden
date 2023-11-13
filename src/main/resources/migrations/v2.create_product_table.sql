@@ -1,6 +1,3 @@
-CREATE DATABASE ecommerce_nursery_garden;
-DROP TABLE products;
-
 --DDL statement
 CREATE TABLE IF NOT EXISTS products (
     id serial not null PRIMARY KEY,

@@ -2,7 +2,6 @@ package com.nurserygarden.ecommerceapp.controllers;
 
 import com.nurserygarden.ecommerceapp.controllers.requests.ProductDto;
 import com.nurserygarden.ecommerceapp.controllers.responses.ProductResponse;
-import com.nurserygarden.ecommerceapp.repositories.entities.Product;
 import com.nurserygarden.ecommerceapp.services.ProductService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,8 +24,8 @@ public class ProductController {
 
 
     @GetMapping
-    public List<Product> getProducts(){
-        return productService.getProducts();
+    public List<ProductResponse> getProducts(){
+        return productService.get();
     }
 
     @PostMapping

@@ -6,6 +6,7 @@ import com.nurserygarden.ecommerceapp.repositories.ProductRepository;
 import com.nurserygarden.ecommerceapp.repositories.entities.Product;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,9 +21,20 @@ public class ProductServiceImpl implements  ProductService {
 
 
     @Override
-    public List<Product> getProducts() {
-        return (List <Product>) productRepository.findAll();
-    }
+    public List<ProductResponse> get() {
+
+            Iterable<Product> findAllIterable = productRepository.findAll();
+            return mapToList(findAllIterable);
+        }
+
+        private List<ProductResponse> mapToList(Iterable<Product> iterable) {
+            List<ProductResponse> listOfProductResponse = new ArrayList<>();
+            for (Product product : iterable) {
+              listOfProductResponse.add( toProductResponse(product));
+            }
+            return listOfProductResponse;
+        }
+
 
     @Override
     public ProductResponse create(ProductDto productDTO) {
@@ -51,8 +63,8 @@ public class ProductServiceImpl implements  ProductService {
         productResponse.setPrice(product.getPrice());
         productResponse.setColor(product.getColor());
         //productResponse.setCategoryName(product.getCategoryId());
-        productResponse.setCreated_at(product.getCreatedAt());
-        productResponse.setUpdated_at(product.getUpdatedAt());
+        productResponse.setCreatedAt(product.getCreatedAt());
+        productResponse.setUpdatedAt(product.getUpdatedAt());
 
         return productResponse;
     }

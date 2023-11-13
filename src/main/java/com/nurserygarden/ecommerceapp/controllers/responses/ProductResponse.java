@@ -20,9 +20,9 @@ public class ProductResponse {
     private Status status;
 
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss")
-    private OffsetDateTime created_at;
+    private OffsetDateTime createdAt;
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss")
-    private OffsetDateTime updated_at;
+    private OffsetDateTime updatedAt;
 
     public Long getId() {
         return id;
@@ -96,19 +96,19 @@ public class ProductResponse {
         this.status = status;
     }
 
-    public OffsetDateTime getCreated_at() {
-        return created_at;
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(OffsetDateTime created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(OffsetDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public OffsetDateTime getUpdated_at() {
-        return updated_at;
+    public OffsetDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdated_at(OffsetDateTime updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
