@@ -6,18 +6,19 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-
+import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Entity
-@Table(name= "products")
+@Table(name = "products")
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private java.lang.Long id;
     @Column(name = "name", nullable = false)
     private String name;
     @Column(name = "large_name")
@@ -31,28 +32,28 @@ public class Product {
     @Column(name = "color")
     private String color;
 
-   // @ManyToOne
-    @Column(name = "category_id")
-    private Long categoryId;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     //@Enumerated(EnumType.ORDINAL)
     //@Column(columnDefinition = status_enum)
     //private Status status;
 
-    @Column(name= "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt = OffsetDateTime.now();
 
-    @Column(name= "updated_at", nullable = false)
+    @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt = OffsetDateTime.now();
 
 
-    @Column(name= "deleted_at")
+    @Column(name = "deleted_at")
     private OffsetDateTime deletededAt;
 
     public Product() {
     }
 
-    public Product(Long id, String name, String largeName, String description, Integer quantity, BigDecimal price, String color, Long categoryId, OffsetDateTime createdAt, OffsetDateTime updatedAt, OffsetDateTime deletededAt) {
+    public Product(Long id, String name, String largeName, String description, Integer quantity, BigDecimal price, String color, Category category, OffsetDateTime createdAt, OffsetDateTime updatedAt, OffsetDateTime deletededAt) {
         this.id = id;
         this.name = name;
         this.largeName = largeName;
@@ -60,7 +61,7 @@ public class Product {
         this.quantity = quantity;
         this.price = price;
         this.color = color;
-        this.categoryId = categoryId;
+        this.category = category;
         //this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -123,22 +124,23 @@ public class Product {
         this.color = color;
     }
 
-    public Long getCategoryId() {
-        return categoryId;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
-    }
-/*
-    public Status getStatus() {
-        return status;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-*/
+    /*
+        public Status getStatus() {
+            return status;
+        }
+
+        public void setStatus(Status status) {
+            this.status = status;
+        }
+    */
     public OffsetDateTime getCreatedAt() {
         return createdAt;
     }

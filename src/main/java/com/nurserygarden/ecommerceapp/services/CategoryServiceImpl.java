@@ -26,6 +26,12 @@ public class CategoryServiceImpl implements CategoryService {
         return toCategoryResponse(categoryCreated);
     }
 
+    @Override
+    public Category findById(Long id) {
+
+        return categoryRepository.findById(id).orElse(null);
+    }
+
     private CategoryResponse toCategoryResponse(Category category) {
         CategoryResponse response = new CategoryResponse();
         response.setId(category.getId());

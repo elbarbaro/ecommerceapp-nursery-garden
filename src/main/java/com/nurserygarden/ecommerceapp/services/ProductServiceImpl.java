@@ -2,43 +2,49 @@ package com.nurserygarden.ecommerceapp.services;
 
 import com.nurserygarden.ecommerceapp.controllers.requests.ProductDto;
 import com.nurserygarden.ecommerceapp.controllers.responses.ProductResponse;
+import com.nurserygarden.ecommerceapp.repositories.CategoryRepository;
 import com.nurserygarden.ecommerceapp.repositories.ProductRepository;
+import com.nurserygarden.ecommerceapp.repositories.entities.Category;
 import com.nurserygarden.ecommerceapp.repositories.entities.Product;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class ProductServiceImpl implements  ProductService {
+public class ProductServiceImpl implements ProductService {
 
     private ProductRepository productRepository;
+    private CategoryRepository categoryRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository)
-    {
+
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
     }
 
 
     @Override
     public List<ProductResponse> get() {
 
-            Iterable<Product> findAllIterable = productRepository.findAll();
-            return mapToList(findAllIterable);
-        }
+        Iterable<Product> findAllIterable = productRepository.findAll();
+        return mapToList(findAllIterable);
+    }
 
-        private List<ProductResponse> mapToList(Iterable<Product> iterable) {
-            List<ProductResponse> listOfProductResponse = new ArrayList<>();
-            for (Product product : iterable) {
-              listOfProductResponse.add( toProductResponse(product));
-            }
-            return listOfProductResponse;
+    private List<ProductResponse> mapToList(Iterable<Product> iterable) {
+        List<ProductResponse> listOfProductResponse = new ArrayList<>();
+        for (Product product : iterable) {
+            listOfProductResponse.add(toProductResponse(product));
         }
+        return listOfProductResponse;
+    }
 
 
     @Override
     public ProductResponse create(ProductDto productDTO) {
         Product product = new Product();
+        Optional<Category> category = categoryRepository.findById(productDTO.getCategoryId());
 
         product.setName(productDTO.getName());
         product.setLargeName(productDTO.getLargeName());
@@ -46,7 +52,7 @@ public class ProductServiceImpl implements  ProductService {
         product.setQuantity(productDTO.getQuantity());
         product.setPrice(productDTO.getPrice());
         product.setColor(productDTO.getColor());
-        product.setCategoryId(productDTO.getCategoryId());
+        product.setCategory(category.get());
 
         Product productCreated = productRepository.save(product);
         return toProductResponse(productCreated);
@@ -62,7 +68,7 @@ public class ProductServiceImpl implements  ProductService {
         productResponse.setQuantity(product.getQuantity());
         productResponse.setPrice(product.getPrice());
         productResponse.setColor(product.getColor());
-        //productResponse.setCategoryName(product.getCategoryId());
+        productResponse.setCategoryName(product.getCategory().getName());
         productResponse.setCreatedAt(product.getCreatedAt());
         productResponse.setUpdatedAt(product.getUpdatedAt());
 

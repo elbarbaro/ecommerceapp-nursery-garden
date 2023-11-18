@@ -1,7 +1,8 @@
 package com.nurserygarden.ecommerceapp.controllers.responses;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.nurserygarden.ecommerceapp.repositories.entity.Status;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.nurserygarden.ecommerceapp.repositories.entities.Status;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -10,15 +11,15 @@ public class ProductResponse {
 
     private Long id;
     private String name;
+    @JsonProperty("large_name")
     private String largeName;
     private String description;
     private Integer quantity;
     private BigDecimal price;
     private String color;
+    @JsonProperty("category_name")
     private String categoryName;
-
     private Status status;
-
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss")
     private OffsetDateTime createdAt;
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss")

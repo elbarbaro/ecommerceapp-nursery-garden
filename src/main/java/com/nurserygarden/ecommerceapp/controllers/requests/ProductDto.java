@@ -1,14 +1,17 @@
 package com.nurserygarden.ecommerceapp.controllers.requests;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 
 public class ProductDto {
     private String name;
+    @JsonProperty("large_name")
     private String largeName;
     private String description;
     private Integer quantity;
     private BigDecimal price;
     private String color;
+    @JsonProperty("category_id")
     private Long categoryId;
 
     public ProductDto() {
