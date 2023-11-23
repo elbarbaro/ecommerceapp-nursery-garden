@@ -1,24 +1,25 @@
 package com.nurserygarden.ecommerceapp.repositories.entities;
 
 import javax.persistence.Column;
-import javax.persistence.Id;
 import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
-import java.math.BigDecimal;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Table;
 import java.time.OffsetDateTime;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "products")
 public class Product {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private java.lang.Long id;
+    private Long id;
     @Column(name = "name", nullable = false)
     private String name;
     @Column(name = "large_name")
@@ -36,9 +37,9 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    //@Enumerated(EnumType.ORDINAL)
-    //@Column(columnDefinition = status_enum)
-    //private Status status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
 
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt = OffsetDateTime.now();
@@ -46,14 +47,13 @@ public class Product {
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt = OffsetDateTime.now();
 
-
     @Column(name = "deleted_at")
     private OffsetDateTime deletededAt;
 
     public Product() {
     }
 
-    public Product(Long id, String name, String largeName, String description, Integer quantity, BigDecimal price, String color, Category category, OffsetDateTime createdAt, OffsetDateTime updatedAt, OffsetDateTime deletededAt) {
+    public Product(Long id, String name, String largeName, String description, Integer quantity, BigDecimal price, String color, Category category, Status status, OffsetDateTime createdAt, OffsetDateTime updatedAt, OffsetDateTime deletededAt) {
         this.id = id;
         this.name = name;
         this.largeName = largeName;
@@ -62,7 +62,7 @@ public class Product {
         this.price = price;
         this.color = color;
         this.category = category;
-        //this.status = status;
+        this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletededAt = deletededAt;
@@ -132,15 +132,16 @@ public class Product {
         this.category = category;
     }
 
-    /*
-        public Status getStatus() {
-            return status;
-        }
+    @Enumerated(EnumType.STRING)
+    public Status getStatus() {
+        return status;
+    }
 
-        public void setStatus(Status status) {
-            this.status = status;
-        }
-    */
+    @Enumerated(EnumType.STRING)
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     public OffsetDateTime getCreatedAt() {
         return createdAt;
     }

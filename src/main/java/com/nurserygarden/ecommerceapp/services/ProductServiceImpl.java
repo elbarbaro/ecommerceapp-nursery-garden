@@ -6,6 +6,7 @@ import com.nurserygarden.ecommerceapp.repositories.CategoryRepository;
 import com.nurserygarden.ecommerceapp.repositories.ProductRepository;
 import com.nurserygarden.ecommerceapp.repositories.entities.Category;
 import com.nurserygarden.ecommerceapp.repositories.entities.Product;
+import com.nurserygarden.ecommerceapp.repositories.entities.Status;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -44,18 +45,24 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse create(ProductDto productDTO) {
         Product product = new Product();
-        Optional<Category> category = categoryRepository.findById(productDTO.getCategoryId());
+        try {
+            Optional<Category> category = categoryRepository.findById(productDTO.getCategoryId());
 
-        product.setName(productDTO.getName());
-        product.setLargeName(productDTO.getLargeName());
-        product.setDescription(productDTO.getDescription());
-        product.setQuantity(productDTO.getQuantity());
-        product.setPrice(productDTO.getPrice());
-        product.setColor(productDTO.getColor());
-        product.setCategory(category.get());
+            product.setName(productDTO.getName());
+            product.setLargeName(productDTO.getLargeName());
+            product.setDescription(productDTO.getDescription());
+            product.setQuantity(productDTO.getQuantity());
+            product.setPrice(productDTO.getPrice());
+            product.setColor(productDTO.getColor());
+            product.setCategory(category.get());
+            product.setStatus(Status.ACTIVE);
 
-        Product productCreated = productRepository.save(product);
-        return toProductResponse(productCreated);
+            Product productCreated = productRepository.save(product);
+            return toProductResponse(productCreated);
+        } catch (Exception e) {
+            System.err.println("Product not created");
+        }
+        return null;
     }
 
     private ProductResponse toProductResponse(Product product) {
@@ -69,8 +76,10 @@ public class ProductServiceImpl implements ProductService {
         productResponse.setPrice(product.getPrice());
         productResponse.setColor(product.getColor());
         productResponse.setCategoryName(product.getCategory().getName());
+        productResponse.setStatus(product.getStatus());
         productResponse.setCreatedAt(product.getCreatedAt());
         productResponse.setUpdatedAt(product.getUpdatedAt());
+
 
         return productResponse;
     }
