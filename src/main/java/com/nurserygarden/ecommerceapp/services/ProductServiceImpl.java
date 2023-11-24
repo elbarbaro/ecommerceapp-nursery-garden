@@ -59,9 +59,8 @@ public class ProductServiceImpl implements ProductService {
 
             Product productCreated = productRepository.save(product);
             return toProductResponse(productCreated);
-        } catch (Exception e) {
-            System.err.println("Product not created");
-        }
+        } catch (Exception e) {  }
+
         return null;
     }
 

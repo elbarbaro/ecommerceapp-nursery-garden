@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS products (
     price           numeric,
     color           varchar(15),
     category_id     integer,
-    status       status_enum not null,
+    status          varchar(15) not null,
     created_at      timestamp not null,
     updated_at      timestamp not null,
     deleted_at      timestamp
