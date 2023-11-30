@@ -21,8 +21,10 @@ public class ProductResponse {
     private String categoryName;
     private Status status;
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss")
+    @JsonProperty("created_at")
     private OffsetDateTime createdAt;
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss")
+    @JsonProperty("updated_at")
     private OffsetDateTime updatedAt;
 
     public Long getId() {

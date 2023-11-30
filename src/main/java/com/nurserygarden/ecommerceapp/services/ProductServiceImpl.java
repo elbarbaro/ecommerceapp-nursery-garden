@@ -9,9 +9,9 @@ import com.nurserygarden.ecommerceapp.repositories.entities.Product;
 import com.nurserygarden.ecommerceapp.repositories.entities.Status;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -33,6 +33,13 @@ public class ProductServiceImpl implements ProductService {
         return mapToList(findAllIterable);
     }
 
+    @Override
+    public ProductResponse getById(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+
+        return toProductResponse(product);
+    }
+
     private List<ProductResponse> mapToList(Iterable<Product> iterable) {
         List<ProductResponse> listOfProductResponse = new ArrayList<>();
         for (Product product : iterable) {
@@ -46,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse create(ProductDto productDTO) {
         Product product = new Product();
         try {
-            Optional<Category> category = categoryRepository.findById(productDTO.getCategoryId());
+            Category category = categoryRepository.findById(productDTO.getCategoryId()).orElseThrow(EntityNotFoundException::new);
 
             product.setName(productDTO.getName());
             product.setLargeName(productDTO.getLargeName());
@@ -54,7 +61,7 @@ public class ProductServiceImpl implements ProductService {
             product.setQuantity(productDTO.getQuantity());
             product.setPrice(productDTO.getPrice());
             product.setColor(productDTO.getColor());
-            product.setCategory(category.get());
+            product.setCategory(category);
             product.setStatus(Status.ACTIVE);
 
             Product productCreated = productRepository.save(product);
@@ -64,6 +71,23 @@ public class ProductServiceImpl implements ProductService {
         }
 
 
+    }
+
+    @Override
+    public ProductResponse update(ProductDto productDto, Long id) {
+        Product productDb = productRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Category category = categoryRepository.findById(productDto.getCategoryId()).orElseThrow(EntityNotFoundException::new);
+
+        productDb.setName(productDto.getName());
+        productDb.setLargeName(productDto.getLargeName());
+        productDb.setDescription(productDto.getDescription());
+        productDb.setQuantity(productDto.getQuantity());
+        productDb.setPrice(productDto.getPrice());
+        productDb.setColor(productDto.getColor());
+        productDb.setCategory(category);
+
+        Product productUpdated = productRepository.save(productDb);
+        return toProductResponse(productUpdated);
     }
 
     private ProductResponse toProductResponse(Product product) {
