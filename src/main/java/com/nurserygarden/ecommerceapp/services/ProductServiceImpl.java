@@ -2,22 +2,22 @@ package com.nurserygarden.ecommerceapp.services;
 
 import com.nurserygarden.ecommerceapp.controllers.requests.ProductDto;
 import com.nurserygarden.ecommerceapp.controllers.responses.ProductResponse;
+import com.nurserygarden.ecommerceapp.exceptions.CategoryNotFoundException;
+import com.nurserygarden.ecommerceapp.exceptions.ProductNotFoundException;
 import com.nurserygarden.ecommerceapp.repositories.CategoryRepository;
 import com.nurserygarden.ecommerceapp.repositories.ProductRepository;
 import com.nurserygarden.ecommerceapp.repositories.entities.Category;
 import com.nurserygarden.ecommerceapp.repositories.entities.Product;
 import com.nurserygarden.ecommerceapp.repositories.entities.Status;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private ProductRepository productRepository;
-    private CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
 
     public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
@@ -35,7 +35,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse getById(Long id) {
-        Product product = productRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Product product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
 
         return toProductResponse(product);
     }
@@ -52,8 +52,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse create(ProductDto productDTO) {
         Product product = new Product();
-        try {
-            Category category = categoryRepository.findById(productDTO.getCategoryId()).orElseThrow(EntityNotFoundException::new);
+
+            Category category = categoryRepository.findById(productDTO.getCategoryId()).orElseThrow( CategoryNotFoundException::new);
 
             product.setName(productDTO.getName());
             product.setLargeName(productDTO.getLargeName());
@@ -66,17 +66,15 @@ public class ProductServiceImpl implements ProductService {
 
             Product productCreated = productRepository.save(product);
             return toProductResponse(productCreated);
-        } catch (Exception e) {
-            return null;
-        }
+
 
 
     }
 
     @Override
     public ProductResponse update(ProductDto productDto, Long id) {
-        Product productDb = productRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        Category category = categoryRepository.findById(productDto.getCategoryId()).orElseThrow(EntityNotFoundException::new);
+        Product productDb = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
+        Category category = categoryRepository.findById(productDto.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
 
         productDb.setName(productDto.getName());
         productDb.setLargeName(productDto.getLargeName());

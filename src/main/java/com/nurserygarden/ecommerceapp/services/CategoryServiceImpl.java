@@ -2,6 +2,7 @@ package com.nurserygarden.ecommerceapp.services;
 
 import com.nurserygarden.ecommerceapp.controllers.requests.CategoryDto;
 import com.nurserygarden.ecommerceapp.controllers.responses.CategoryResponse;
+import com.nurserygarden.ecommerceapp.exceptions.CategoryNotFoundException;
 import com.nurserygarden.ecommerceapp.repositories.CategoryRepository;
 import com.nurserygarden.ecommerceapp.repositories.entities.Category;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category findById(Long id) {
-        Category category = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException());
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException());
 
         return category;
     }
