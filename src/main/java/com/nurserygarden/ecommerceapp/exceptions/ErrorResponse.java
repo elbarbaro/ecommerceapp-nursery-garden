@@ -2,6 +2,7 @@
 package com.nurserygarden.ecommerceapp.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpStatus;
 
 import java.time.OffsetDateTime;
@@ -9,6 +10,7 @@ import java.time.OffsetDateTime;
 public class ErrorResponse {
     private HttpStatus status;
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss")
+    @JsonProperty("time_stamp")
     private OffsetDateTime timeStamp;
     private String message;
 

@@ -10,6 +10,7 @@ import com.nurserygarden.ecommerceapp.repositories.entities.Category;
 import com.nurserygarden.ecommerceapp.repositories.entities.Product;
 import com.nurserygarden.ecommerceapp.repositories.entities.Status;
 import org.springframework.stereotype.Service;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,6 +84,7 @@ public class ProductServiceImpl implements ProductService {
         productDb.setPrice(productDto.getPrice());
         productDb.setColor(productDto.getColor());
         productDb.setCategory(category);
+        productDb.setUpdatedAt(OffsetDateTime.now());
 
         Product productUpdated = productRepository.save(productDb);
         return toProductResponse(productUpdated);
