@@ -2,22 +2,23 @@ package com.nurserygarden.ecommerceapp.services;
 
 import com.nurserygarden.ecommerceapp.controllers.requests.ProductDto;
 import com.nurserygarden.ecommerceapp.controllers.responses.ProductResponse;
+import com.nurserygarden.ecommerceapp.exceptions.CategoryNotFoundException;
+import com.nurserygarden.ecommerceapp.exceptions.ProductNotFoundException;
 import com.nurserygarden.ecommerceapp.repositories.CategoryRepository;
 import com.nurserygarden.ecommerceapp.repositories.ProductRepository;
 import com.nurserygarden.ecommerceapp.repositories.entities.Category;
 import com.nurserygarden.ecommerceapp.repositories.entities.Product;
 import com.nurserygarden.ecommerceapp.repositories.entities.Status;
 import org.springframework.stereotype.Service;
-
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private ProductRepository productRepository;
-    private CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
 
     public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
@@ -33,6 +34,13 @@ public class ProductServiceImpl implements ProductService {
         return mapToList(findAllIterable);
     }
 
+    @Override
+    public ProductResponse getById(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
+
+        return toProductResponse(product);
+    }
+
     private List<ProductResponse> mapToList(Iterable<Product> iterable) {
         List<ProductResponse> listOfProductResponse = new ArrayList<>();
         for (Product product : iterable) {
@@ -45,8 +53,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse create(ProductDto productDTO) {
         Product product = new Product();
-        try {
-            Optional<Category> category = categoryRepository.findById(productDTO.getCategoryId());
+
+            Category category = categoryRepository.findById(productDTO.getCategoryId()).orElseThrow( CategoryNotFoundException::new);
 
             product.setName(productDTO.getName());
             product.setLargeName(productDTO.getLargeName());
@@ -54,16 +62,32 @@ public class ProductServiceImpl implements ProductService {
             product.setQuantity(productDTO.getQuantity());
             product.setPrice(productDTO.getPrice());
             product.setColor(productDTO.getColor());
-            product.setCategory(category.get());
+            product.setCategory(category);
             product.setStatus(Status.ACTIVE);
 
             Product productCreated = productRepository.save(product);
             return toProductResponse(productCreated);
-        } catch (Exception e) {
-            return null;
-        }
 
 
+
+    }
+
+    @Override
+    public ProductResponse update(ProductDto productDto, Long id) {
+        Product productDb = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
+        Category category = categoryRepository.findById(productDto.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
+
+        productDb.setName(productDto.getName());
+        productDb.setLargeName(productDto.getLargeName());
+        productDb.setDescription(productDto.getDescription());
+        productDb.setQuantity(productDto.getQuantity());
+        productDb.setPrice(productDto.getPrice());
+        productDb.setColor(productDto.getColor());
+        productDb.setCategory(category);
+        productDb.setUpdatedAt(OffsetDateTime.now());
+
+        Product productUpdated = productRepository.save(productDb);
+        return toProductResponse(productUpdated);
     }
 
     private ProductResponse toProductResponse(Product product) {

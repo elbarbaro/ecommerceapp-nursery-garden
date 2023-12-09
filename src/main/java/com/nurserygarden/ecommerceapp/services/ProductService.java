@@ -11,7 +11,11 @@ public interface ProductService {
 
     List<ProductResponse> get();
 
+    ProductResponse getById(Long id) ;
+
     ProductResponse create(ProductDto product);
+
+    ProductResponse update(ProductDto productDto, Long id);
 
 }
 
