@@ -4,14 +4,10 @@ import com.nurserygarden.ecommerceapp.controllers.requests.ProductDto;
 import com.nurserygarden.ecommerceapp.controllers.responses.ProductResponse;
 import com.nurserygarden.ecommerceapp.services.ProductService;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -50,5 +46,12 @@ public class ProductController {
     @PutMapping("/{id}")
     public ProductResponse updateProduct(@RequestBody ProductDto product, @PathVariable("id") Long id) {
         return productService.update(product, id);
+    }
+    @DeleteMapping("/{id}")
+    public void deleteProductById(@PathVariable("id") Long id,  HttpServletResponse response){
+
+         productService.deleteById(id);
+         response.setStatus(HttpStatus.NO_CONTENT.value());
+
     }
 }

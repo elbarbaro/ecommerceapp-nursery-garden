@@ -90,6 +90,17 @@ public class ProductServiceImpl implements ProductService {
         return toProductResponse(productUpdated);
     }
 
+    @Override
+    public void deleteById(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
+
+        product.setStatus(Status.INACTIVE);
+        product.setDeletededAt(OffsetDateTime.now());
+
+        Product productDeleted = productRepository.save(product);
+
+    }
+
     private ProductResponse toProductResponse(Product product) {
         ProductResponse productResponse = new ProductResponse();
 
