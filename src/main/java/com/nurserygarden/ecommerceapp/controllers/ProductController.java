@@ -47,6 +47,7 @@ public class ProductController {
     public ProductResponse updateProduct(@RequestBody ProductDto product, @PathVariable("id") Long id) {
         return productService.update(product, id);
     }
+
     @DeleteMapping("/{id}")
     public void deleteProductById(@PathVariable("id") Long id,  HttpServletResponse response){
 

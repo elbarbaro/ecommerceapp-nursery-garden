@@ -97,7 +97,7 @@ public class ProductServiceImpl implements ProductService {
         product.setStatus(Status.INACTIVE);
         product.setDeletededAt(OffsetDateTime.now());
 
-        Product productDeleted = productRepository.save(product);
+        productRepository.save(product);
 
     }
 
