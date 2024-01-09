@@ -26,7 +26,24 @@ public class ProductImageController {
 
     @PostMapping(path = "/products/{id}/images", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<String> saveImage(@RequestParam("image") @RequestPart MultipartFile document) throws Exception {
+        if (!document.isEmpty()) {
+            try {
+                String dir = "/upload";
+                String pathToUpload = request.getServletContext().getRealPath(dir);
+                if (!new File(pathToUpload).exists()) {
+                    new File(pathToUpload).mkdir();
+                }
+                log.info("Path of uploaded file = {}", pathToUpload);
 
-        return ResponseEntity.ok("Successfully uploaded");
-    }
+
+                String orgName = document.getOriginalFilename();
+                String filePath = pathToUpload + orgName;
+                File dest = new File(filePath);
+            } catch (Exception e) {
+                log.error("Error: ", e);
+            }
+        }
+            return ResponseEntity.ok("Successfully uploaded");
+        }
+
 }
