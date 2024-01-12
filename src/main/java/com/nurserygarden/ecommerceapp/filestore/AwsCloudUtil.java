@@ -6,14 +6,17 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-public class CloudUtil {
+public class AwsCloudUtil {
     private AWSCredentials awsCredentials(String accessKey, String secretKey) {
         AWSCredentials credentials = new BasicAWSCredentials(
                 accessKey,
@@ -31,17 +34,17 @@ public class CloudUtil {
         return s3Client;
     }
 
-    public void uploadFileToS3(String fileName, byte[] fileBytes, String accessKey, String secretKey, String bucket) {
+    public void uploadFileToS3(String fileName, MultipartFile image, String accessKey, String secretKey, String bucket) throws IOException {
         AmazonS3 s3Client = awsClientBuilder(accessKey, secretKey);
 
         File file = new File(fileName);
 
         try (OutputStream os = new FileOutputStream(file)) {
-
+            os.write(image.getBytes());
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         s3Client.putObject(bucket, fileName, file);
     }
