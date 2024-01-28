@@ -1,7 +1,7 @@
 package com.nurserygarden.ecommerceapp.controllers.responses;
 
 public class ImageResponse {
-    String url;
+    private String url;
 
 
     public String getUrl() {

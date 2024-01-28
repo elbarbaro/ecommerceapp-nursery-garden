@@ -5,7 +5,6 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import com.nurserygarden.ecommerceapp.controllers.requests.ImageDto;
 import com.nurserygarden.ecommerceapp.controllers.responses.ImageResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -39,8 +38,8 @@ public class FileStoreServiceImpl {
             uploadFileToS3(image.getOriginalFilename(), image, AWS_BUCKET, path);
 
             String url = generatePresignedGetUrl(image.getOriginalFilename());
-            ImageDto imageUrl = new ImageDto(url);
-            return toImageResponse(imageUrl);
+
+            return toImageResponse(url);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -88,10 +87,10 @@ public class FileStoreServiceImpl {
         return null;
     }
 
-    private ImageResponse toImageResponse(ImageDto imageDto) {
+    private ImageResponse toImageResponse(String imageUrl) {
         ImageResponse imageResponse = new ImageResponse();
 
-        imageResponse.setUrl(imageDto.getUrl());
+        imageResponse.setUrl(imageUrl);
 
         return imageResponse;
 
