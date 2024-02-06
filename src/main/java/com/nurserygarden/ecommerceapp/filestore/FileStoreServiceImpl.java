@@ -5,7 +5,8 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import com.nurserygarden.ecommerceapp.controllers.responses.ImageResponse;
+import com.nurserygarden.ecommerceapp.controllers.responses.ProductImageResponse;
+import com.nurserygarden.ecommerceapp.services.ProductImageServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,14 +23,17 @@ public class FileStoreServiceImpl {
 
     private AmazonS3 awsClient;
 
-    private FileStoreServiceImpl(AmazonS3 awsClient) {
+    private ProductImageServiceImpl productImageService;
+
+    private FileStoreServiceImpl(AmazonS3 awsClient, ProductImageServiceImpl productImageService) {
         this.awsClient = awsClient;
+        this.productImageService = productImageService;
     }
 
     @Value("${aws.bucket}")
     public String AWS_BUCKET;
 
-    public ImageResponse uploadMultipartFileS3(MultipartFile image, Long id) {
+    public ProductImageResponse uploadMultipartFileS3(MultipartFile image, Long id) {
 
         String path = "\\" + id + "\\" + image.getOriginalFilename();
 
@@ -39,7 +43,7 @@ public class FileStoreServiceImpl {
 
             String url = generatePresignedGetUrl(image.getOriginalFilename());
 
-            return toImageResponse(url);
+            return toImageResponse(url, id);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -87,12 +91,12 @@ public class FileStoreServiceImpl {
         return null;
     }
 
-    private ImageResponse toImageResponse(String imageUrl) {
-        ImageResponse imageResponse = new ImageResponse();
+    private ProductImageResponse toImageResponse(String imageUrl, Long id) {
+        ProductImageResponse productImageResponse = new ProductImageResponse();
 
-        imageResponse.setUrl(imageUrl);
+        productImageResponse.setUrl(imageUrl);
 
-        return imageResponse;
+        return productImageResponse;
 
     }
 }
