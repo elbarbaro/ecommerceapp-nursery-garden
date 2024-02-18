@@ -2,12 +2,14 @@ package com.nurserygarden.ecommerceapp.services;
 
 import com.nurserygarden.ecommerceapp.controllers.responses.ProductImageResponse;
 import com.nurserygarden.ecommerceapp.exceptions.ProductNotFoundException;
+import com.nurserygarden.ecommerceapp.filestore.FileStoreServiceImpl;
 import com.nurserygarden.ecommerceapp.repositories.ProductImagesRepository;
 import com.nurserygarden.ecommerceapp.repositories.ProductRepository;
 import com.nurserygarden.ecommerceapp.repositories.entities.Product;
-import com.nurserygarden.ecommerceapp.repositories.entities.ProductImages;
+import com.nurserygarden.ecommerceapp.repositories.entities.ProductImage;
 import com.nurserygarden.ecommerceapp.repositories.entities.Status;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ProductImageServiceImpl implements ProductImageService {
@@ -16,40 +18,46 @@ public class ProductImageServiceImpl implements ProductImageService {
 
     private ProductRepository productRepository;
 
-    public ProductImageServiceImpl(ProductImagesRepository productImagesRepository, ProductRepository productRepository) {
+    private FileStoreServiceImpl fileStoreService;
+
+    public ProductImageServiceImpl(FileStoreServiceImpl fileStoreService, ProductImagesRepository productImagesRepository, ProductRepository productRepository) {
         this.productImagesRepository = productImagesRepository;
         this.productRepository = productRepository;
+        this.fileStoreService = fileStoreService;
+
     }
 
     @Override
-    public ProductImageResponse create(String imageUrl, Long productId) {
+    public ProductImageResponse create(MultipartFile file, Long productId) {
 
-        ProductImages productImage = new ProductImages();
+        ProductImage productImage = new ProductImage();
 
         Product product = productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
+
+
+        String imageUrl = fileStoreService.uploadMultipartFileS3(file, productId);
+
 
         productImage.setProductId(product);
         productImage.setImageUrl(imageUrl);
         productImage.setStatus(Status.ACTIVE);
 
-        ProductImages productImagesCreated = productImagesRepository.save(productImage);
+        ProductImage productImageCreated = productImagesRepository.save(productImage);
 
-
-        return productImagesResponse(productImagesCreated);
+        return productImagesResponse(productImageCreated);
     }
 
-    private ProductImageResponse productImagesResponse(ProductImages productImagesCreated) {
+    private ProductImageResponse productImagesResponse(ProductImage productImageCreated) {
 
         ProductImageResponse response = new ProductImageResponse();
 
-        response.setId(productImagesCreated.getId());
-        response.setUrl(productImagesCreated.getImageUrl());
-        response.setProductId(productImagesCreated.getProductId().getId());
-        response.setStatus(productImagesCreated.getStatus());
-        response.setCreatedAt(productImagesCreated.getCreatedAt());
-        response.setUpdatedAt(productImagesCreated.getUpdatedAt());
+        response.setId(productImageCreated.getId());
+        response.setUrl(productImageCreated.getImageUrl());
+        response.setProductId(productImageCreated.getProductId().getId());
+        response.setStatus(productImageCreated.getStatus());
+        response.setCreatedAt(productImageCreated.getCreatedAt());
+        response.setUpdatedAt(productImageCreated.getUpdatedAt());
 
         return response;
     }
 }
-

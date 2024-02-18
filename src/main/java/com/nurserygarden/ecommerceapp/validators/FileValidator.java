@@ -7,16 +7,17 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 @Slf4j
-public class FileValidator implements ConstraintValidator<ValidFile, MultipartFile> {
+public class FileValidator implements ConstraintValidator <ValidFile, MultipartFile> {
 
-    private final int MAX_SIZE = 3 * 1024;
+    private final int MAX_SIZE = 3 * 1024 *1024;
+
+    private String message;
 
     @Override
     public void initialize(ValidFile validFile) {
-
+        this.message = validFile.message();
         log.info("File validator initialized!!");
     }
-
 
     @Override
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext constraintValidatorContext) {
@@ -35,7 +36,8 @@ public class FileValidator implements ConstraintValidator<ValidFile, MultipartFi
             result = false;
             return result;
 
-        } else if (multipartFile.getSize() > MAX_SIZE) {
+        }
+        if (multipartFile.getSize() > MAX_SIZE) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate(
                             "{Max file size exceeded}"
@@ -46,6 +48,8 @@ public class FileValidator implements ConstraintValidator<ValidFile, MultipartFi
 
         }
 
-        return result;
+            return result;
+
     }
+
 }

@@ -23,11 +23,10 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "product_images")
-public class ProductImages {
+public class ProductImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
     @ManyToOne
@@ -47,5 +46,6 @@ public class ProductImages {
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt = OffsetDateTime.now();
 
+    @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
 }

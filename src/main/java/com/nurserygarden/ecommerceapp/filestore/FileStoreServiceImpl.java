@@ -5,8 +5,6 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import com.nurserygarden.ecommerceapp.controllers.responses.ProductImageResponse;
-import com.nurserygarden.ecommerceapp.services.ProductImageServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,17 +21,15 @@ public class FileStoreServiceImpl {
 
     private AmazonS3 awsClient;
 
-    private ProductImageServiceImpl productImageService;
 
-    private FileStoreServiceImpl(AmazonS3 awsClient, ProductImageServiceImpl productImageService) {
+    private FileStoreServiceImpl(AmazonS3 awsClient) {
         this.awsClient = awsClient;
-        this.productImageService = productImageService;
     }
 
     @Value("${aws.bucket}")
     public String AWS_BUCKET;
 
-    public ProductImageResponse uploadMultipartFileS3(MultipartFile image, Long id) {
+    public String uploadMultipartFileS3(MultipartFile image, Long id) {
 
         String path = "\\" + id + "\\" + image.getOriginalFilename();
 
@@ -43,7 +39,7 @@ public class FileStoreServiceImpl {
 
             String url = generatePresignedGetUrl(image.getOriginalFilename());
 
-            return toImageResponse(url, id);
+            return url;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -91,12 +87,4 @@ public class FileStoreServiceImpl {
         return null;
     }
 
-    private ProductImageResponse toImageResponse(String imageUrl, Long id) {
-        ProductImageResponse productImageResponse = new ProductImageResponse();
-
-        productImageResponse.setUrl(imageUrl);
-
-        return productImageResponse;
-
-    }
 }
