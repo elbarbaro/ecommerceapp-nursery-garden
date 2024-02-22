@@ -1,10 +1,8 @@
 package com.nurserygarden.ecommerceapp.controllers;
 
 import com.nurserygarden.ecommerceapp.controllers.responses.ProductImageResponse;
-import com.nurserygarden.ecommerceapp.services.ProductImageServiceImpl;
+import com.nurserygarden.ecommerceapp.services.ProductImageService;
 import com.nurserygarden.ecommerceapp.validators.ValidFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -16,18 +14,18 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/images")
 public class ProductImageController {
 
-    private ProductImageServiceImpl productImageServiceImpl;
+    private ProductImageService productImageService;
 
 
-    public ProductImageController(ProductImageServiceImpl productImageServiceImpl) {
-        this.productImageServiceImpl = productImageServiceImpl;
+    public ProductImageController(ProductImageService productImageService) {
+        this.productImageService = productImageService;
 
     }
 
     @PostMapping(path = "/products/{id}/images", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ProductImageResponse> saveImage(@ValidFile @RequestBody @RequestPart @RequestParam("image") MultipartFile document, @PathVariable("id") Long id) {
 
-        ProductImageResponse fullResponse = productImageServiceImpl.create(document, id);
+        ProductImageResponse fullResponse = productImageService.create(document, id);
 
         return ResponseEntity.ok(fullResponse);
     }
