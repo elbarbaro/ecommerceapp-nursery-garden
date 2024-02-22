@@ -9,25 +9,34 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<Object> handleProductNotFoundException(HttpServletRequest req, ProductNotFoundException ex){
+    public ResponseEntity<Object> handleProductNotFoundException(HttpServletRequest req, ProductNotFoundException ex) {
         ErrorResponse response = new ErrorResponse(HttpStatus.NOT_FOUND);
-        response.setMessage( "Product not found" + req.getRequestURI());
-        return buildResponseEntity(response);
-    }
-    @ExceptionHandler(CategoryNotFoundException.class)
-    public ResponseEntity<Object> handleCategoryNotFoundException(HttpServletRequest req, CategoryNotFoundException ex){
-        ErrorResponse response = new ErrorResponse(HttpStatus.NOT_FOUND);
-        response.setMessage( "Category not found " + req.getRequestURI());
+        response.setMessage("Product not found" + req.getRequestURI());
         return buildResponseEntity(response);
     }
 
-    private ResponseEntity<Object> buildResponseEntity(ErrorResponse errorResponse){
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<Object> handleCategoryNotFoundException(HttpServletRequest req, CategoryNotFoundException ex) {
+        ErrorResponse response = new ErrorResponse(HttpStatus.NOT_FOUND);
+        response.setMessage("Category not found " + req.getRequestURI());
+        return buildResponseEntity(response);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolationException(HttpServletRequest req, ConstraintViolationException ex) {
+        ErrorResponse response = new ErrorResponse(HttpStatus.BAD_REQUEST);
+        response.setMessage("File not valide, error: " + ex.getMessage());
+        return buildResponseEntity(response);
+    }
+
+    private ResponseEntity<Object> buildResponseEntity(ErrorResponse errorResponse) {
         return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
     }
 }
