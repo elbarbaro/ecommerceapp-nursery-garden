@@ -21,7 +21,6 @@ public class FileStoreServiceImpl {
 
     private AmazonS3 awsClient;
 
-
     private FileStoreServiceImpl(AmazonS3 awsClient) {
         this.awsClient = awsClient;
     }
@@ -65,7 +64,9 @@ public class FileStoreServiceImpl {
     }
 
     public String generatePresignedGetUrl(String fileName) {
+
         String objectKey = fileName;
+
         try {
             java.util.Date expiration = new java.util.Date();
             long expTimeMillis = expiration.getTime();

@@ -32,7 +32,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException(HttpServletRequest req, ConstraintViolationException ex) {
         ErrorResponse response = new ErrorResponse(HttpStatus.BAD_REQUEST);
-        response.setMessage("File not valide, error: " + ex.getMessage());
+        response.setMessage("File not valid, error: " + ex.getMessage());
         return buildResponseEntity(response);
     }
 

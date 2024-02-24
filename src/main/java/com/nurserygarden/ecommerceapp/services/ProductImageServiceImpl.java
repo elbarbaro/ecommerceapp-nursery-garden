@@ -11,6 +11,9 @@ import com.nurserygarden.ecommerceapp.repositories.entities.Status;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class ProductImageServiceImpl implements ProductImageService {
 
@@ -28,23 +31,31 @@ public class ProductImageServiceImpl implements ProductImageService {
     }
 
     @Override
-    public ProductImageResponse create(MultipartFile file, Long productId) {
+    public List<ProductImageResponse> create(MultipartFile[] files, Long productId) {
 
-        ProductImage productImage = new ProductImage();
-
+        ProductImage productImage;
+        ProductImage productImageCreated;
         Product product = productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
 
 
-        String imageUrl = fileStoreService.uploadMultipartFileS3(file, productId);
+        ArrayList<ProductImageResponse> productImageList = new ArrayList<>();
+        if (files.length > 0) {
+            for (MultipartFile file : files) {
+                productImage = new ProductImage();
 
+                String imageUrl = fileStoreService.uploadMultipartFileS3(file, productId);
 
-        productImage.setProductId(product);
-        productImage.setImageUrl(imageUrl);
-        productImage.setStatus(Status.ACTIVE);
+                productImage.setProductId(product);
+                productImage.setImageUrl(imageUrl);
+                productImage.setStatus(Status.ACTIVE);
+                productImage.getId();
 
-        ProductImage productImageCreated = productImagesRepository.save(productImage);
+                productImageCreated = productImagesRepository.save(productImage);
+                productImageList.add(productImagesResponse(productImageCreated));
 
-        return productImagesResponse(productImageCreated);
+            }
+        }
+        return productImageList;
     }
 
     private ProductImageResponse productImagesResponse(ProductImage productImageCreated) {
