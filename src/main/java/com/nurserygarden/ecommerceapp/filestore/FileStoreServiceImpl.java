@@ -28,22 +28,15 @@ public class FileStoreServiceImpl {
     @Value("${aws.bucket}")
     public String AWS_BUCKET;
 
-    public String uploadMultipartFileS3(MultipartFile image, Long id) {
+    public String uploadMultipartFileS3(MultipartFile image, Long id) throws IOException {
 
         String path = "\\" + id + "\\" + image.getOriginalFilename();
 
-        try {
+        uploadFileToS3(image.getOriginalFilename(), image, AWS_BUCKET, path);
 
-            uploadFileToS3(image.getOriginalFilename(), image, AWS_BUCKET, path);
+        String url = generatePresignedGetUrl(image.getOriginalFilename());
 
-            String url = generatePresignedGetUrl(image.getOriginalFilename());
-
-            return url;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return url;
     }
 
     public void uploadFileToS3(String fileName, MultipartFile image, String bucket, String path) throws IOException {
@@ -67,25 +60,19 @@ public class FileStoreServiceImpl {
 
         String objectKey = fileName;
 
-        try {
-            java.util.Date expiration = new java.util.Date();
-            long expTimeMillis = expiration.getTime();
-            expTimeMillis += 1000 * 60 * 10;
-            expiration.setTime(expTimeMillis);
+        java.util.Date expiration = new java.util.Date();
+        long expTimeMillis = expiration.getTime();
+        expTimeMillis += 1000 * 60 * 10;
+        expiration.setTime(expTimeMillis);
 
-            GeneratePresignedUrlRequest generatePresignedUrlRequest =
-                    new GeneratePresignedUrlRequest(AWS_BUCKET, objectKey)
-                            .withMethod(HttpMethod.GET)
-                            .withExpiration(expiration);
-            URL url = awsClient.generatePresignedUrl(generatePresignedUrlRequest);
+        GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                new GeneratePresignedUrlRequest(AWS_BUCKET, objectKey)
+                        .withMethod(HttpMethod.GET)
+                        .withExpiration(expiration);
+        URL url = awsClient.generatePresignedUrl(generatePresignedUrlRequest);
 
-            return url.toString();
-        } catch (AmazonServiceException e) {
-            e.printStackTrace();
-        } catch (SdkClientException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return url.toString();
+
     }
 
 }

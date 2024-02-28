@@ -11,6 +11,7 @@ import com.nurserygarden.ecommerceapp.repositories.entities.Status;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,24 +34,28 @@ public class ProductImageServiceImpl implements ProductImageService {
     @Override
     public List<ProductImageResponse> create(MultipartFile[] files, Long productId) {
 
-        ProductImage productImage;
-        ProductImage productImageCreated;
+
         Product product = productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
 
 
         ArrayList<ProductImageResponse> productImageList = new ArrayList<>();
         if (files.length > 0) {
             for (MultipartFile file : files) {
-                productImage = new ProductImage();
 
-                String imageUrl = fileStoreService.uploadMultipartFileS3(file, productId);
+                String imageUrl = null;
+                try {
+                    imageUrl = fileStoreService.uploadMultipartFileS3(file, productId);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
 
+                ProductImage productImage = new ProductImage();
                 productImage.setProductId(product);
                 productImage.setImageUrl(imageUrl);
                 productImage.setStatus(Status.ACTIVE);
                 productImage.getId();
 
-                productImageCreated = productImagesRepository.save(productImage);
+                ProductImage productImageCreated = productImagesRepository.save(productImage);
                 productImageList.add(productImagesResponse(productImageCreated));
 
             }

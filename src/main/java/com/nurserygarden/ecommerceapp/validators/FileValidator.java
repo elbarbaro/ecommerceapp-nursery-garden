@@ -20,42 +20,36 @@ public class FileValidator implements ConstraintValidator<ValidFile, MultipartFi
     }
 
     @Override
-    public boolean isValid(MultipartFile[] multipartFile, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(MultipartFile[] multipartFile, ConstraintValidatorContext context) {
 
 
         log.info("Validating file");
         boolean result = true;
 
         if (multipartFile.length > 3) {
-            constraintValidatorContext.disableDefaultConstraintViolation();
-            constraintValidatorContext.buildConstraintViolationWithTemplate(
-                            "{Max amount of images allowed is 3}"
-                    )
-                    .addConstraintViolation();
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(
+                    "{Max amount of images allowed is 3}"
+            ).addConstraintViolation();
             result = false;
-            return result;
         }
         for (MultipartFile file : multipartFile
         ) {
             if (file.isEmpty()) {
 
-                constraintValidatorContext.disableDefaultConstraintViolation();
-                constraintValidatorContext.buildConstraintViolationWithTemplate(
-                                "{Empty file}"
-                        )
-                        .addConstraintViolation();
+                context.disableDefaultConstraintViolation();
+                context.buildConstraintViolationWithTemplate(
+                        "{Empty file}"
+                ).addConstraintViolation();
                 result = false;
-                return result;
 
             }
             if (file.getSize() > MAX_SIZE) {
-                constraintValidatorContext.disableDefaultConstraintViolation();
-                constraintValidatorContext.buildConstraintViolationWithTemplate(
-                                "{Max file size exceeded}"
-                        )
-                        .addConstraintViolation();
+                context.disableDefaultConstraintViolation();
+                context.buildConstraintViolationWithTemplate(
+                        "{Max file size exceeded}"
+                ).addConstraintViolation();
                 result = false;
-                return result;
             }
         }
 
