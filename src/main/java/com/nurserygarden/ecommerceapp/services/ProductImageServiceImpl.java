@@ -1,5 +1,6 @@
 package com.nurserygarden.ecommerceapp.services;
 
+import com.amazonaws.services.lexruntime.model.BadGatewayException;
 import com.nurserygarden.ecommerceapp.controllers.responses.ProductImageResponse;
 import com.nurserygarden.ecommerceapp.exceptions.ProductNotFoundException;
 import com.nurserygarden.ecommerceapp.filestore.FileStoreServiceImpl;
@@ -46,7 +47,7 @@ public class ProductImageServiceImpl implements ProductImageService {
                 try {
                     imageUrl = fileStoreService.uploadMultipartFileS3(file, productId);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new BadGatewayException("an invalid response has been received from s3: ");
                 }
 
                 ProductImage productImage = new ProductImage();
