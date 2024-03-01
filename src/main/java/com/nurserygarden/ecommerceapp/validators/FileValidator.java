@@ -9,8 +9,6 @@ import javax.validation.ConstraintValidatorContext;
 @Slf4j
 public class FileValidator implements ConstraintValidator<ValidFile, MultipartFile[]> {
 
-    private final int MAX_SIZE = 3 * 1024 * 1024;
-
     private String message;
 
     @Override
@@ -43,13 +41,6 @@ public class FileValidator implements ConstraintValidator<ValidFile, MultipartFi
                 ).addConstraintViolation();
                 result = false;
 
-            }
-            if (file.getSize() > MAX_SIZE) {
-                context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate(
-                        "{Max file size exceeded}"
-                ).addConstraintViolation();
-                result = false;
             }
         }
 
