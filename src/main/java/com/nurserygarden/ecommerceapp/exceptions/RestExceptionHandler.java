@@ -37,13 +37,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(response);
     }
 
-    @ExceptionHandler(FileSizeLimitExceededException.class)
-    public ResponseEntity<Object> handleFileSizeLimitExceededException(HttpServletRequest req, FileSizeLimitExceededException ex) {
-        ErrorResponse response = new ErrorResponse(HttpStatus.BAD_REQUEST);
-        response.setMessage("Invalid file: " + ex.getMessage());
-        return buildResponseEntity(response);
-    }
-
     private ResponseEntity<Object> buildResponseEntity(ErrorResponse errorResponse) {
         return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
     }
