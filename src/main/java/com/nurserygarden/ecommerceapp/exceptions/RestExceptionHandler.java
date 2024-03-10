@@ -1,6 +1,5 @@
 package com.nurserygarden.ecommerceapp.exceptions;
 
-import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -34,6 +33,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleConstraintViolationException(HttpServletRequest req, ConstraintViolationException ex) {
         ErrorResponse response = new ErrorResponse(HttpStatus.BAD_REQUEST);
         response.setMessage("File not valid, error: " + ex.getMessage());
+        return buildResponseEntity(response);
+    }
+
+    @ExceptionHandler(FileStoreBadGateWayException.class)
+    public ResponseEntity<Object> handleFileStoreBadGateWayException(HttpServletRequest req, FileStoreBadGateWayException ex) {
+        ErrorResponse response = new ErrorResponse(HttpStatus.BAD_GATEWAY);
+        response.setMessage(ex.getMessage());
         return buildResponseEntity(response);
     }
 
