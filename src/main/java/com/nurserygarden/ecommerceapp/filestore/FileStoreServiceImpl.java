@@ -21,7 +21,6 @@ public class FileStoreServiceImpl {
 
     private AmazonS3 awsClient;
 
-
     private FileStoreServiceImpl(AmazonS3 awsClient) {
         this.awsClient = awsClient;
     }
@@ -34,9 +33,7 @@ public class FileStoreServiceImpl {
         String path = "\\" + id + "\\" + image.getOriginalFilename();
 
         try {
-
             uploadFileToS3(image.getOriginalFilename(), image, AWS_BUCKET, path);
-
             String url = generatePresignedGetUrl(image.getOriginalFilename());
 
             return url;
@@ -65,8 +62,10 @@ public class FileStoreServiceImpl {
     }
 
     public String generatePresignedGetUrl(String fileName) {
+
         String objectKey = fileName;
         try {
+
             java.util.Date expiration = new java.util.Date();
             long expTimeMillis = expiration.getTime();
             expTimeMillis += 1000 * 60 * 10;
@@ -79,6 +78,7 @@ public class FileStoreServiceImpl {
             URL url = awsClient.generatePresignedUrl(generatePresignedUrlRequest);
 
             return url.toString();
+
         } catch (AmazonServiceException e) {
             e.printStackTrace();
         } catch (SdkClientException e) {
