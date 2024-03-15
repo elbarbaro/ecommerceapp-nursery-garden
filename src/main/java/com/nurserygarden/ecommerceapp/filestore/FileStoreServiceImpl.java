@@ -5,6 +5,7 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.nurserygarden.ecommerceapp.exceptions.FileStoreBadGateWayException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,23 +29,18 @@ public class FileStoreServiceImpl {
     @Value("${aws.bucket}")
     public String AWS_BUCKET;
 
-    public String uploadMultipartFileS3(MultipartFile image, Long id) {
+    public String uploadMultipartFileS3(MultipartFile image, Long id) throws FileStoreBadGateWayException {
 
         String path = "\\" + id + "\\" + image.getOriginalFilename();
 
-        try {
-            uploadFileToS3(image.getOriginalFilename(), image, AWS_BUCKET, path);
-            String url = generatePresignedGetUrl(image.getOriginalFilename());
+        uploadFileToS3(image.getOriginalFilename(), image, AWS_BUCKET, path);
 
-            return url;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String url = generatePresignedGetUrl(image.getOriginalFilename());
 
-        return null;
+        return url;
     }
 
-    public void uploadFileToS3(String fileName, MultipartFile image, String bucket, String path) throws IOException {
+    public void uploadFileToS3(String fileName, MultipartFile image, String bucket, String path) {
 
 
         File file = new File(fileName);
@@ -61,7 +57,7 @@ public class FileStoreServiceImpl {
         }
     }
 
-    public String generatePresignedGetUrl(String fileName) {
+    public String generatePresignedGetUrl(String fileName) throws FileStoreBadGateWayException {
 
         String objectKey = fileName;
         try {
@@ -84,7 +80,7 @@ public class FileStoreServiceImpl {
         } catch (SdkClientException e) {
             e.printStackTrace();
         }
-        return null;
+        throw new FileStoreBadGateWayException("Invalid response from S3");
     }
 
 }

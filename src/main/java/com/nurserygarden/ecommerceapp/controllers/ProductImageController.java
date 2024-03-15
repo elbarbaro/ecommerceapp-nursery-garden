@@ -1,6 +1,7 @@
 package com.nurserygarden.ecommerceapp.controllers;
 
 import com.nurserygarden.ecommerceapp.controllers.responses.ProductImageResponse;
+import com.nurserygarden.ecommerceapp.exceptions.FileStoreBadGateWayException;
 import com.nurserygarden.ecommerceapp.services.ProductImageService;
 import com.nurserygarden.ecommerceapp.validators.ValidFile;
 import org.springframework.http.MediaType;
@@ -29,7 +30,7 @@ public class ProductImageController {
     }
 
     @PostMapping(path = "/products/{id}/images", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<List<ProductImageResponse>> saveImage(@ValidFile @RequestBody @RequestPart @RequestParam("image") MultipartFile[] document, @PathVariable("id") Long id) {
+    public ResponseEntity<List<ProductImageResponse>> saveImage(@ValidFile @RequestBody @RequestPart @RequestParam("image") MultipartFile[] document, @PathVariable("id") Long id) throws FileStoreBadGateWayException {
 
         List<ProductImageResponse> fullResponse = productImageService.create(document, id);
 

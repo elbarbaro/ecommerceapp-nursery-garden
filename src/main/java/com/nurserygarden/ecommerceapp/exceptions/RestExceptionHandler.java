@@ -36,6 +36,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(response);
     }
 
+    @ExceptionHandler(FileStoreBadGateWayException.class)
+    public ResponseEntity<Object> handleFileStoreBadGateWayException(HttpServletRequest req, FileStoreBadGateWayException ex) {
+        ErrorResponse response = new ErrorResponse(HttpStatus.BAD_GATEWAY);
+        response.setMessage(ex.getMessage());
+        return buildResponseEntity(response);
+    }
+
     private ResponseEntity<Object> buildResponseEntity(ErrorResponse errorResponse) {
         return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
     }

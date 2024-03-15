@@ -1,6 +1,7 @@
 package com.nurserygarden.ecommerceapp.services;
 
 import com.nurserygarden.ecommerceapp.controllers.responses.ProductImageResponse;
+import com.nurserygarden.ecommerceapp.exceptions.FileStoreBadGateWayException;
 import com.nurserygarden.ecommerceapp.exceptions.ProductNotFoundException;
 import com.nurserygarden.ecommerceapp.filestore.FileStoreServiceImpl;
 import com.nurserygarden.ecommerceapp.repositories.ProductImagesRepository;
@@ -31,7 +32,7 @@ public class ProductImageServiceImpl implements ProductImageService {
     }
 
     @Override
-    public List<ProductImageResponse> create(MultipartFile[] files, Long productId) {
+    public List<ProductImageResponse> create(MultipartFile[] files, Long productId) throws FileStoreBadGateWayException {
 
 
         Product product = productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
