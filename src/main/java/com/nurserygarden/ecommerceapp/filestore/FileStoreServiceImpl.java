@@ -80,7 +80,7 @@ public class FileStoreServiceImpl {
         } catch (SdkClientException e) {
             e.printStackTrace();
         }
-        throw new FileStoreBadGateWayException();
+        throw new FileStoreBadGateWayException("Invalid response from S3");
     }
 
 }
