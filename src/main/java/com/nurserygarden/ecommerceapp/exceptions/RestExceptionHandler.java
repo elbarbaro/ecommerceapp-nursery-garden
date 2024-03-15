@@ -1,6 +1,5 @@
 package com.nurserygarden.ecommerceapp.exceptions;
 
-import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
