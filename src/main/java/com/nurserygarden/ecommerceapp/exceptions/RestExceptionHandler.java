@@ -43,6 +43,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(response);
     }
 
+    @ExceptionHandler(UserTypeNotFoundException.class)
+    public ResponseEntity<Object> handleUserNotFoundException(HttpServletRequest req, UserTypeNotFoundException ex) {
+        ErrorResponse response = new ErrorResponse(HttpStatus.BAD_REQUEST);
+        response.setMessage("UserType not found " + req.getRequestURI());
+        return buildResponseEntity(response);
+    }
+
     private ResponseEntity<Object> buildResponseEntity(ErrorResponse errorResponse) {
         return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
     }
