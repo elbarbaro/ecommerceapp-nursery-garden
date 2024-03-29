@@ -20,11 +20,11 @@ public class UserController {
     }
 
     @PostMapping(path = "/users")
-    public HttpStatus createUser(@RequestBody UserDto user) {
+    public ResponseEntity<UserResponse> createUser(@RequestBody UserDto user) {
 
         UserResponse response = userService.create(user);
 
-        return ResponseEntity.ok(response).getStatusCode();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
     }
 }

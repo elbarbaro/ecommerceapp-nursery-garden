@@ -2,10 +2,19 @@ package com.nurserygarden.ecommerceapp.repositories.entities;
 
 import lombok.Data;
 
-import javax.persistence.*;
 import java.time.OffsetDateTime;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Table;
 
 @Data
+@Entity
+@Table(name = "user_types")
 public class UserType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,8 +23,6 @@ public class UserType {
     private String name;
     @Column(name = "description", nullable = false)
     private String description;
-    @Column(name = "profile_image_url", nullable = false)
-    private String profileImageUrl;
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Status status;
