@@ -8,7 +8,7 @@ status varchar(15) not null,
 created_at timestamp not null,
 updated_at timestamp not null,
 deleted_at timestamp
-)
+);
 
 CREATE TABLE IF NOT EXISTS users(
 id serial not null PRIMARY KEY,
@@ -21,5 +21,11 @@ profile_image_url varchar(350),
 status varchar(15) not null,
 created_at timestamp not null,
 updated_at timestamp not null,
-deleted_at timestamp
+deleted_at timestamp NULL
 );
+
+INSERT INTO user_types(name, description, status, created_at, updated_at, deleted_at) VALUES
+('ADMIN','this user has been created with all permissions','ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+
+INSERT INTO user_types(name, description, status, created_at, updated_at, deleted_at) VALUES
+('user','this user has basic permissions','ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);

@@ -8,18 +8,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping(path="/users")
 public class UserController {
 
-    UserService userService;
+    private UserService userService;
 
     public UserController(UserServiceImpl userServiceImpl) {
         this.userService = userServiceImpl;
     }
 
-    @PostMapping(path = "/users")
+    @PostMapping
     public ResponseEntity<UserResponse> createUser(@RequestBody UserDto user) {
 
         UserResponse response = userService.create(user);

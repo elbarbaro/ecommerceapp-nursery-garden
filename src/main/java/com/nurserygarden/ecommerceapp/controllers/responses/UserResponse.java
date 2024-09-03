@@ -12,7 +12,7 @@ public class UserResponse {
     private Long id;
     private String email;
     @JsonProperty("user_type")
-    private String userType;
+    private UserType userType;
     @JsonProperty("first_name")
     private String firstName;
     @JsonProperty("last_name")
