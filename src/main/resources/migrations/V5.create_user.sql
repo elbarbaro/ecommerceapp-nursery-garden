@@ -25,7 +25,7 @@ deleted_at timestamp NULL
 );
 
 INSERT INTO user_types(name, description, status, created_at, updated_at, deleted_at) VALUES
-('ADMIN','this user has been created with all permissions','ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+('ADMIN','this user has been created with all permissions','ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP, NULL);
 
 INSERT INTO user_types(name, description, status, created_at, updated_at, deleted_at) VALUES
-('user','this user has basic permissions','ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+('CLIENT','this user has basic permissions','ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP, NULL);

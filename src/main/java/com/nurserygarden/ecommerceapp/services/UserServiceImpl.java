@@ -2,30 +2,28 @@ package com.nurserygarden.ecommerceapp.services;
 
 import com.nurserygarden.ecommerceapp.controllers.requests.UserDto;
 import com.nurserygarden.ecommerceapp.controllers.responses.UserResponse;
-import com.nurserygarden.ecommerceapp.exceptions.UserTypeNotFoundException;
 import com.nurserygarden.ecommerceapp.repositories.UserRepository;
-import com.nurserygarden.ecommerceapp.repositories.UserTypeRepository;
 import com.nurserygarden.ecommerceapp.repositories.entities.Status;
-import com.nurserygarden.ecommerceapp.controllers.responses.UserType;
+import com.nurserygarden.ecommerceapp.controllers.responses.UserTypeValue;
 import com.nurserygarden.ecommerceapp.repositories.entities.User;
+import com.nurserygarden.ecommerceapp.repositories.entities.UserType;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
-    private UserTypeRepository userTypeRepository;
+    private UserTypeServiceImpl userTypeServiceImpl;
 
-    public UserServiceImpl(UserRepository userRepository, UserTypeRepository userTypeRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserTypeServiceImpl userTypeServiceImpl) {
         this.userRepository = userRepository;
-        this.userTypeRepository = userTypeRepository;
+        this.userTypeServiceImpl = userTypeServiceImpl;
     }
 
     @Override
     public UserResponse create(UserDto userDto) {
 
-        com.nurserygarden.ecommerceapp.repositories.entities.UserType userType = userTypeRepository.findById(userDto.getUserTypeId()).orElseThrow(UserTypeNotFoundException::new);
-
+        UserType userType = userTypeServiceImpl.findUserTypeById(userDto.getUserTypeId());
         User user = new User();
 
         user.setEmail(userDto.getEmail());
@@ -44,10 +42,9 @@ public class UserServiceImpl implements UserService {
 
         UserResponse userResponse = new UserResponse();
 
-
         userResponse.setId(user.getId());
         userResponse.setEmail(user.getEmail());
-        userResponse.setUserType(UserType.valueOf(user.getUserType().getName()));
+        userResponse.setUserTypeValue(UserTypeValue.valueOf(user.getUserType().getName()));
         userResponse.setFirstName(user.getFirstName());
         userResponse.setLastName(user.getLastName());
         userResponse.setProfileImageUrl(user.getProfileImageUrl());

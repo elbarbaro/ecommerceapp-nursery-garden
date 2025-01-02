@@ -1,5 +1,5 @@
 package com.nurserygarden.ecommerceapp.controllers.responses;
 
-public enum UserType {
+public enum UserTypeValue {
     ADMIN, CLIENT
 }
