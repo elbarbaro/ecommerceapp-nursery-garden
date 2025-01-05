@@ -1,29 +1,35 @@
 package com.nurserygarden.ecommerceapp.services;
 
+import com.nurserygarden.ecommerceapp.controllers.requests.ImageDto;
 import com.nurserygarden.ecommerceapp.controllers.requests.ProductDto;
 import com.nurserygarden.ecommerceapp.controllers.responses.ProductResponse;
 import com.nurserygarden.ecommerceapp.exceptions.CategoryNotFoundException;
 import com.nurserygarden.ecommerceapp.exceptions.ProductNotFoundException;
 import com.nurserygarden.ecommerceapp.repositories.CategoryRepository;
+import com.nurserygarden.ecommerceapp.repositories.ProductImagesRepository;
 import com.nurserygarden.ecommerceapp.repositories.ProductRepository;
 import com.nurserygarden.ecommerceapp.repositories.entities.Category;
 import com.nurserygarden.ecommerceapp.repositories.entities.Product;
+import com.nurserygarden.ecommerceapp.repositories.entities.ProductImage;
 import com.nurserygarden.ecommerceapp.repositories.entities.Status;
 import org.springframework.stereotype.Service;
+
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ProductImagesRepository productImagesRepository;
 
-
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, ProductImagesRepository productImagesRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.productImagesRepository = productImagesRepository;
     }
 
 
@@ -54,20 +60,19 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse create(ProductDto productDTO) {
         Product product = new Product();
 
-            Category category = categoryRepository.findById(productDTO.getCategoryId()).orElseThrow( CategoryNotFoundException::new);
+        Category category = categoryRepository.findById(productDTO.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
 
-            product.setName(productDTO.getName());
-            product.setLargeName(productDTO.getLargeName());
-            product.setDescription(productDTO.getDescription());
-            product.setQuantity(productDTO.getQuantity());
-            product.setPrice(productDTO.getPrice());
-            product.setColor(productDTO.getColor());
-            product.setCategory(category);
-            product.setStatus(Status.ACTIVE);
+        product.setName(productDTO.getName());
+        product.setLargeName(productDTO.getLargeName());
+        product.setDescription(productDTO.getDescription());
+        product.setQuantity(productDTO.getQuantity());
+        product.setPrice(productDTO.getPrice());
+        product.setColor(productDTO.getColor());
+        product.setCategory(category);
+        product.setStatus(Status.ACTIVE);
 
-            Product productCreated = productRepository.save(product);
-            return toProductResponse(productCreated);
-
+        Product productCreated = productRepository.save(product);
+        return toProductResponse(productCreated);
 
 
     }
@@ -104,6 +109,12 @@ public class ProductServiceImpl implements ProductService {
     private ProductResponse toProductResponse(Product product) {
         ProductResponse productResponse = new ProductResponse();
 
+        List<ProductImage> productWithImages = new ArrayList<>();
+
+        productImagesRepository.findAll().forEach(productWithImages::add);
+
+        List<ImageDto> images = productWithImages.stream().filter(image -> image.getProduct().getId().equals(product.getId())).map(image -> new ImageDto(image.getImageUrl(), image.getStatus())).collect(Collectors.toList());
+
         productResponse.setId(product.getId());
         productResponse.setName(product.getName());
         productResponse.setLargeName(product.getLargeName());
@@ -112,10 +123,10 @@ public class ProductServiceImpl implements ProductService {
         productResponse.setPrice(product.getPrice());
         productResponse.setColor(product.getColor());
         productResponse.setCategoryName(product.getCategory().getName());
+        productResponse.setImageDto(images);
         productResponse.setStatus(product.getStatus());
         productResponse.setCreatedAt(product.getCreatedAt());
         productResponse.setUpdatedAt(product.getUpdatedAt());
-
 
         return productResponse;
     }

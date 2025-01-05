@@ -2,10 +2,12 @@ package com.nurserygarden.ecommerceapp.controllers.responses;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.nurserygarden.ecommerceapp.controllers.requests.ImageDto;
 import com.nurserygarden.ecommerceapp.repositories.entities.Status;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 public class ProductResponse {
 
@@ -19,6 +21,8 @@ public class ProductResponse {
     private String color;
     @JsonProperty("category_name")
     private String categoryName;
+    @JsonProperty("images")
+    private List<ImageDto> imageDto;
     private Status status;
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss")
     @JsonProperty("created_at")
@@ -89,6 +93,14 @@ public class ProductResponse {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public List<ImageDto> getImageDto() {
+        return imageDto;
+    }
+
+    public void setImageDto(List<ImageDto> imageDto) {
+        this.imageDto = imageDto;
     }
 
     public Status getStatus() {
