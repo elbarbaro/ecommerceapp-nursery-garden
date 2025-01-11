@@ -22,7 +22,7 @@ public class ProductResponse {
     @JsonProperty("category_name")
     private String categoryName;
     @JsonProperty("images")
-    private List<ProductImageDto> productProductImageDtoList;
+    private List<ProductImageDto> images;
     private Status status;
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss")
     @JsonProperty("created_at")
@@ -95,12 +95,12 @@ public class ProductResponse {
         this.categoryName = categoryName;
     }
 
-    public List<ProductImageDto> getProductImageDtoList() {
-        return productProductImageDtoList;
+    public List<ProductImageDto> getImages() {
+        return images;
     }
 
-    public void setProductImageDtoList(List<ProductImageDto> productProductImageDtoList) {
-        this.productProductImageDtoList = productProductImageDtoList;
+    public void setImages(List<ProductImageDto> images) {
+        this.images = images;
     }
 
     public Status getStatus() {

@@ -127,7 +127,7 @@ public class ProductServiceImpl implements ProductService {
         productResponse.setPrice(product.getPrice());
         productResponse.setColor(product.getColor());
         productResponse.setCategoryName(product.getCategory().getName());
-        productResponse.setProductImageDtoList(toProductImageDto(productImageList));
+        productResponse.setImages(toProductImageDto(productImageList));
         productResponse.setStatus(product.getStatus());
         productResponse.setCreatedAt(product.getCreatedAt());
         productResponse.setUpdatedAt(product.getUpdatedAt());
