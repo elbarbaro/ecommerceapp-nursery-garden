@@ -103,7 +103,7 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
     }
 
-    public List<ProductImageDto> toProductImageDto(List<ProductImage> products) {
+    public List<ProductImageDto> toProductImageDtoList(List<ProductImage> products) {
         return products.stream().map(product -> {
             ProductImageDto productImage = new ProductImageDto();
             productImage.setUrl(product.getImageUrl());
@@ -127,7 +127,7 @@ public class ProductServiceImpl implements ProductService {
         productResponse.setPrice(product.getPrice());
         productResponse.setColor(product.getColor());
         productResponse.setCategoryName(product.getCategory().getName());
-        productResponse.setImages(toProductImageDto(productImageList));
+        productResponse.setImages(toProductImageDtoList(productImageList));
         productResponse.setStatus(product.getStatus());
         productResponse.setCreatedAt(product.getCreatedAt());
         productResponse.setUpdatedAt(product.getUpdatedAt());
