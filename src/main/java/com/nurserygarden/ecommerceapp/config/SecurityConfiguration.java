@@ -1,30 +1,30 @@
 package com.nurserygarden.ecommerceapp.config;
 
-import com.nurserygarden.ecommerceapp.services.UserServiceDetailImpl;
+import com.nurserygarden.ecommerceapp.exceptions.CustomAccesDeniedHandler;
+import com.nurserygarden.ecommerceapp.exceptions.CustomAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    UserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
+    private CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private CustomAccesDeniedHandler accesDeniedHandler;
 
-    public SecurityConfiguration(UserDetailsService userDetailsService) {
+    public SecurityConfiguration(UserDetailsService userDetailsService, CustomAccesDeniedHandler accesDeniedHandler, CustomAuthenticationEntryPoint authenticationEntryPoint) {
         this.userDetailsService = userDetailsService;
+        this.accesDeniedHandler = accesDeniedHandler;
+        this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
     @Bean
@@ -32,39 +32,47 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
+    /*@Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
-    }
+    }*/
 
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
+   /* @Bean
+    public AuthenticationManager authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
 
-        return authProvider;
-    }
+        return new ProviderManager(authProvider);
+    }*/
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers().permitAll() // Exclude login and token endpoints from authentication
-                .anyRequest().authenticated();
+                .antMatchers(WHITE_lIST).permitAll() // Exclude login and token endpoints from authentication
+                .anyRequest().authenticated()
+                .and()
+                .exceptionHandling().accessDeniedHandler(accesDeniedHandler)
+                .authenticationEntryPoint(authenticationEntryPoint);
     }
-    private static final String[] WHITE_lIST = {"/token"};
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
+
+    }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests((request) -> request
-                        .antMatchers(WHITE_lIST).permitAll()
-                        .anyRequest().authenticated()
-                );
-
-        return http.build();
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
+
+    private static final String[] WHITE_lIST = {"/token", "/users"};
+
+
 }
 

@@ -8,12 +8,16 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenRequest {
+public class TokenDto {
 
+    @JsonProperty("access_token")
+    String accessToken;
+    @JsonProperty("token_type")
+    String tokenType;
+    @JsonProperty("expires_in")
+    String expiresIn;
     @JsonProperty
-    private String email;
-    @JsonProperty
-    private String password;
+    String email;
 
 
 }

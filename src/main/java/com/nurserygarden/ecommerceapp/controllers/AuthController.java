@@ -1,17 +1,10 @@
 package com.nurserygarden.ecommerceapp.controllers;
 
-import com.nurserygarden.ecommerceapp.config.CustomAuthenticationToken;
-import com.nurserygarden.ecommerceapp.config.JwtUtil;
+import com.nurserygarden.ecommerceapp.controllers.requests.TokenDto;
 import com.nurserygarden.ecommerceapp.controllers.requests.TokenRequest;
-import com.nurserygarden.ecommerceapp.repositories.entities.User;
-import com.nurserygarden.ecommerceapp.services.UserDetailsImpl;
-import com.nurserygarden.ecommerceapp.services.UserServiceDetailImpl;
-import org.springframework.jdbc.datasource.UserCredentialsDataSourceAdapter;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.nurserygarden.ecommerceapp.services.AuthService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,29 +12,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
-    private final UserServiceDetailImpl userServiceDetailimpl;
+    private final AuthService authService;
 
-    public AuthController(AuthenticationManager authenticationManager, UserServiceDetailImpl userServiceDetailimpl) {
-        this.authenticationManager = authenticationManager;
-        this.userServiceDetailimpl =   userServiceDetailimpl;
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
 
     @PostMapping("/token")
-    public TokenRequest login(@RequestBody TokenRequest request) {
-        Authentication authenticationRequest = new CustomAuthenticationToken(null, request.getEmail(),request.getPassword());
+    public ResponseEntity<TokenDto> login(@RequestBody TokenRequest request) {
 
-        UserDetails user = userServiceDetailimpl.loadUserByUsername(request.getEmail());
-        if(user!= null){
-            if(request.getEmail()== user.getUsername()&& request.getPassword() == user.getPassword()){
+        TokenDto  token =   authService.authValidation(request);
 
-                authenticationManager.authenticate(authenticationRequest);
-            }
 
-        }
-        return new TokenRequest(request.getEmail(), request.getPassword());
 
+        return new ResponseEntity<>(token, HttpStatus.OK);
        /* return
         1. Crear un rest controller
         2. Injectar un objeto del tipo AuthenticationManager
