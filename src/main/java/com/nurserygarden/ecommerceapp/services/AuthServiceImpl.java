@@ -5,6 +5,7 @@ import com.nurserygarden.ecommerceapp.controllers.requests.TokenRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,10 +21,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public TokenDto authValidation(TokenRequest request) {
+        Authentication authenticationrequest =
+        UsernamePasswordAuthenticationToken.unauthenticated(request.getEmail(), request.getPassword());
 
-        UsernamePasswordAuthenticationToken authenticationRequest = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
-
-        authenticationManager.authenticate(authenticationRequest);
+        authenticationManager.authenticate(authenticationrequest);
         return new TokenDto("", "", "", request.getEmail());
 
 

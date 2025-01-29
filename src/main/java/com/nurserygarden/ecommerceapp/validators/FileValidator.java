@@ -3,8 +3,8 @@ package com.nurserygarden.ecommerceapp.validators;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 @Slf4j
 public class FileValidator implements ConstraintValidator<ValidFile, MultipartFile[]> {
